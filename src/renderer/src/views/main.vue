@@ -1,18 +1,24 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
-  <div id="main-view"  :style="`background-color:rgba(255,255,255, ${todoStore.opacity})`">
-    <div style="padding: 40px 20px 0px 20px;  ">
-      <el-header height="120px" style="margin:0px;padding:0px">
+  <div id="main-view" :style="`background-color:rgba(255,255,255, ${todoStore.opacity})`">
+    <div style="padding: 40px 20px 0px 20px">
+      <el-header height="120px" style="margin: 0px; padding: 0px">
         <mainHeader></mainHeader>
-        <inputeTodo style="padding-top: 20px;"></inputeTodo>
+        <inputeTodo style="padding-top: 20px"></inputeTodo>
       </el-header>
-      <el-main style="padding:30px 0px 0px 0px;overflow:hidden;">
+      <el-main style="padding: 30px 0px 0px 0px; overflow: hidden">
         <el-scrollbar :max-height="scrollbarHeight">
           <div v-if="undoList.length > 0" class="undo-List">
             <div class="undo-title">未完成</div>
-            <div class='undo-items'>
-              <div v-for="item in undoList" class="undo-item" @contextmenu="deleteUndo($event, item.id)">
+            <div class="undo-items">
+              <div
+                v-for="item in undoList"
+                :key="item.id"
+                class="undo-item"
+                @contextmenu="deleteUndo($event, item.id)"
+              >
                 <i class="far fa-circle select-circle" @click="setTodoFinished(item.id)" />
-                <div style="display:flex; flex: 1; justify-content: space-between;">
+                <div style="display: flex; flex: 1; justify-content: space-between">
                   <div class="item-name">
                     <div>{{ item.text }}</div>
                   </div>
@@ -20,49 +26,64 @@
                     {{ showDateTime(item.date) }}
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
           <div v-if="repeatUnodList.length > 0" class="undo-List">
             <div class="undo-title">定期</div>
-            <div class='undo-items'>
-              <div v-for="item in repeatUnodList" class="undo-item" @contextmenu="deleteUndo($event, item.id)">
+            <div class="undo-items">
+              <div
+                v-for="item in repeatUnodList"
+                :key="item.id"
+                class="undo-item"
+                @contextmenu="deleteUndo($event, item.id)"
+              >
                 <i class="far fa-circle select-circle" @click="setTodoRepeatFinished(item.id)" />
-                <div style="display:flex; flex: 1; justify-content: space-between;">
+                <div style="display: flex; flex: 1; justify-content: space-between">
                   <div class="item-name">
                     <div>{{ item.text }}</div>
                   </div>
                   <div class="item-time">
-                    {{ showRepeat(item.repeat) }}<span v-if="item.date !== ''">,</span>{{ showDateTime(item.date) }}
+                    {{ showRepeat(item.repeat) }}<span v-if="item.date !== ''">,</span
+                    >{{ showDateTime(item.date) }}
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
           <div v-if="noDateList.length > 0" class="undo-List">
             <div class="undo-title">无日期</div>
-            <div class='undo-items'>
-              <div v-for="item in noDateList" class="undo-item" @contextmenu="deleteUndo($event, item.id)">
+            <div class="undo-items">
+              <div
+                v-for="item in noDateList"
+                :key="item.id"
+                class="undo-item"
+                @contextmenu="deleteUndo($event, item.id)"
+              >
                 <i class="far fa-circle select-circle" @click="setTodoFinished(item.id)" />
-                <div style="display:flex; flex: 1; justify-content: space-between;">
+                <div style="display: flex; flex: 1; justify-content: space-between">
                   <div class="item-name">
                     <div>{{ item.text }}</div>
                   </div>
-                  <div class="item-time">
-                  </div>
+                  <div class="item-time"></div>
                 </div>
-
               </div>
             </div>
           </div>
           <div v-if="haddoList.length > 0 && todoStore.hideHaddo != true" class="haddo-List">
             <div class="haddo-title">已完成</div>
-            <div class='haddo-items'>
-              <div v-for="item in haddoList" class="haddo-item" @contextmenu="deleteUndo($event, item.id)">
-                <i class="fa-regular fa-circle-check select-circle" @click="setTodoUnFinished(item.id)" />
-                <div style="display:flex; flex: 1; justify-content: space-between;">
+            <div class="haddo-items">
+              <div
+                v-for="item in haddoList"
+                :key="item.id"
+                class="haddo-item"
+                @contextmenu="deleteUndo($event, item.id)"
+              >
+                <i
+                  class="fa-regular fa-circle-check select-circle"
+                  @click="setTodoUnFinished(item.id)"
+                />
+                <div style="display: flex; flex: 1; justify-content: space-between">
                   <div class="item-name">
                     <div>{{ item.text }}</div>
                   </div>
@@ -75,23 +96,21 @@
           </div>
         </el-scrollbar>
         <context-menu v-model:show="show" :options="optionsComponent">
-          <context-menu-item @click="onMenuClick(now_select)" style="">
-            <div style="font-size: 15px;">
-              <i class="fa-regular fa-trash-can"></i>删除
-            </div>
+          <context-menu-item style="" @click="onMenuClick(now_select)">
+            <div style="font-size: 15px"><i class="fa-regular fa-trash-can"></i>删除</div>
           </context-menu-item>
         </context-menu>
       </el-main>
     </div>
   </div>
 </template>
-  
+
 <script lang="ts" setup>
 import { ref, reactive, computed } from 'vue'
 import mainHeader from '@renderer/components/mainHeader.vue'
 import inputeTodo from '@renderer/components/inputTodo.vue'
-import { todos } from "@renderer/stores/config";
-import moment from 'moment';
+import { todos } from '@renderer/stores/config'
+import moment from 'moment'
 const todoStore = todos()
 const undoList = computed(() => todoStore.unfinishedTodosDate)
 const noDateList = computed(() => todoStore.unfinishedTodosNoDate)
@@ -100,7 +119,7 @@ const repeatUnodList = computed(() => todoStore.repeatTodos)
 const show = ref<boolean>(false)
 const now_select = ref<number>(0)
 const scrollbarHeight = ref<number>(380)
-window.api.resetScrollbarHeight((_event: any, resizeData) => {
+window.api.resetScrollbarHeight((_event: any, resizeData: { [x: string]: any }) => {
   const height = resizeData['height']
   if (height != 600) {
     scrollbarHeight.value = height - 220
@@ -129,42 +148,44 @@ const optionsComponent = reactive({
   minWidth: 150,
   minHeight: 80,
   x: 500,
-  y: 200,
+  y: 200
 })
-const showRepeat = function (repeat) {
+const showRepeat = function (repeat: string): string | undefined {
   const repeatMap = new Map<string, string>([
     ['Never', '从不'],
     ['Day', '每天'],
     ['Week', '每周'],
-    ['Month', '每月'],])
+    ['Month', '每月']
+  ])
   return repeatMap.get(repeat)
 }
-const setTodoFinished = function (id: number) {
+const setTodoFinished = function (id: number): void {
   todoStore.setTodoFinished(id)
 }
-const setTodoRepeatFinished = function (id: number) {
+const setTodoRepeatFinished = function (id: number): void {
   todoStore.setTodoRepeatFinished(id)
 }
-const setTodoUnFinished = function (id: number) {
+const setTodoUnFinished = function (id: number): void {
   todoStore.setTodoUnFinished(id)
 }
-const deleteUndo = function (e: MouseEvent, id: number) {
+const deleteUndo = function (e: MouseEvent, id: number): void {
   now_select.value = id
   show.value = true
   optionsComponent.x = e.x
   optionsComponent.y = e.y
 }
-const onMenuClick = function (id: number) {
+const onMenuClick = function (id: number): void {
   todoStore.delTodo(id)
 }
 const showDateTime = function (dateTime: string): string {
+  if (dateTime === '') {
+    return ''
+  }
   if (dateTime.split(' ').length == 1) {
     return moment(dateTime, 'YYYY-MM-DD ').format('M/D')
-  }
-  else {
+  } else {
     return moment(dateTime, 'YYYY-MM-DD hh:mm').format('M/D HH:MM')
   }
-
 }
 </script>
 <style scoped lang="scss">
@@ -194,13 +215,10 @@ const showDateTime = function (dateTime: string): string {
         font-size: 15px;
         padding-top: 4px;
         margin-right: 5px;
-
       }
 
       .item-name {
         display: flex;
-
-
       }
 
       .item-time {
@@ -210,7 +228,7 @@ const showDateTime = function (dateTime: string): string {
 
     .undo-item:hover {
       .select-circle {
-        color: #409EFF;
+        color: #409eff;
       }
     }
   }
@@ -234,13 +252,10 @@ const showDateTime = function (dateTime: string): string {
         font-size: 15px;
         padding-top: 4px;
         margin-right: 5px;
-
       }
 
       .item-name {
         display: flex;
-
-
       }
 
       .item-time {
@@ -250,9 +265,9 @@ const showDateTime = function (dateTime: string): string {
 
     .haddo-item:hover {
       .select-circle {
-        color: #409EFF;
+        color: #409eff;
       }
     }
   }
-
-}</style>
+}
+</style>

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
@@ -29,10 +31,10 @@ const api = {
     ipcRenderer.on('saveOpacity', callback)
   },
   sendEdge: (date: number) => {
-    return ipcRenderer.send('setEdge', date)
+    return ipcRenderer.send('setEdge', date) //发送请求给主进程要求修改设置
   },
   setHideEdge: (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
-    ipcRenderer.on('saveEdge', callback)
+    ipcRenderer.on('saveEdge', callback)// 主进程通知manwindow修改设置
   },
   sendHideHaddo: (date: number) => {
     return ipcRenderer.send('setHideHaddo', date)

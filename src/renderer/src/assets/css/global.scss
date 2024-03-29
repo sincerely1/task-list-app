@@ -8,21 +8,16 @@ body {
   background-color: transparent;
 }
 
-button,
-html,
-body
+html,body
 {
   -webkit-app-region: drag;
 }
-button,
-input,
+button,input,
 .el-header,
 .el-main,
 .el-footer,
 .settingView,
-.datePickView,
-#main-view
- {
+.datePickView{
   -webkit-app-region: no-drag;
 }
 

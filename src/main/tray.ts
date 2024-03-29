@@ -1,12 +1,10 @@
 import { Menu, Tray } from 'electron'
 import path from 'path'
-const createTray = () => {
+const createTray = (): Tray => {
   const tray = new Tray(
     path.resolve(
       __dirname,
-      process.platform == 'darwin'
-        ? '../../resources/icon@2x.png'
-        : '../../resources/icon.png'
+      process.platform == 'darwin' ? '../../resources/icon@2x.png' : '../../resources/icon.png'
     )
   )
   const contextMenu = Menu.buildFromTemplate([{ label: '退出', role: 'quit' }])
