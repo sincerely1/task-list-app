@@ -39,7 +39,7 @@ import { Close } from '@element-plus/icons-vue'
 import { ref, onMounted } from 'vue'
 const transparentValue = ref(100)
 const hideHaddo = ref(false)
-const hideEdge = ref(true)
+const hideEdge = ref(false)
 const closeWindow = function (): void {
   window.api.closeSetting()
 }
